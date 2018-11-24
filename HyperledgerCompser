@@ -1,0 +1,78 @@
+/**
+ * Write your model definitions here
+ */
+
+namespace org.qt.hyperledger.samples.election
+
+asset election identified by electionId {
+  o String electionId
+  o DateTime electionDate
+  o DateTime electionDescription
+  o ELECTIONTYPE electionType
+  o String constituency
+  o ContenstantVote[] contenstantVotes optional
+  o ELECTIONSTATUS status
+  o Integer count
+  --> Contenstant winner
+}
+
+concept ContenstantVote {
+  o String contenstandID
+  o Integer votesPolled
+}
+
+enum ELECTIONTYPE {
+  o ASSEMBLY
+  o PARLIAMENT
+}
+
+participant User identified by personalId {
+  o String personalId
+  o String Address
+  o PersonalIdentification personalIdentification default="VOTERID"
+}
+
+enum PersonalIdentification {
+  o AADHAR
+  o PAN
+  o VOTERID
+  o DRIVINGLICENSE
+}
+
+enum ELECTIONSTATUS {
+  o NOTSTARTED
+  o STARTED
+  o COMPLETED
+}
+
+participant Voter extends User {
+  o String constituency
+}
+
+participant Contenstant extends User {
+  o ELECTIONTYPE electionType
+  o String constituency
+  o String Party
+}
+
+participant ElectionOfficer extends User {
+  o String officerId
+  
+}
+
+
+transaction vote {
+  o String detail
+  --> Voter voter
+  --> Contenstant Contenstant
+}
+
+transaction StartElection {
+  o String detail
+  --> election election
+}
+
+transaction StopElection {
+  o String detail
+  --> election election
+}
